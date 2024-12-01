@@ -7,13 +7,19 @@
 {%block content %}
 <div class="container">
     <div class = "row">
-        {% for post in Post %}
-            <div class="col s12 m6 l3 xl1">
-                <div class = "card grey darken-2">
+        {% for post in all_posts %}
+            <div class="col s6">
+                <div class = "card green lighten-1">
                     <h2 class = "card-title">{{post.title}}</h2>
-                    <p>{{post.text}}</p>
+                    <p>{{post.text|truncatechars:50}}</p>
+                    <strong>{{post.date_of_creation}}</strong>
+                    <br><br>
+                    <div class = "card-action black">
+                        <a href="#">Розгорнути</a>
+                    </div>
                 </div>
             </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
