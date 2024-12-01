@@ -1,11 +1,16 @@
 {% extends 'base_html.html' %}
 
-
 {% block title %}
-<title>Main page</title>
+<title>Register</title>
 {% endblock %}
 
 {%block content %}
-    <h1>Main page</h1>
-    <p>This is our main page</p>
+    <div class = "container">
+        <form method="POST">
+            {%csrf token %}
+            {{form}}
+            <br>
+            <button class="btn waves-effect waves-light" type="submit">Клац!</button>
+        </form>
+    </div>
 {% endblock %}
