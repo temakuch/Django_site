@@ -18,4 +18,12 @@ def show_one_post(request, post_id):
     return render(request, 'one_post.html', {'post':_post})
 
 def register(request):
-    return render(request, 'register.html')
+    err = ''
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            err = form.errors.as_data()
+    form = UserCreationForm
+    return render(request, 'register.html', {"form":form})
