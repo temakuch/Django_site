@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
+from django.contrib import messages
 from .models import Post
 
 def index(request):
@@ -24,20 +25,24 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            username = form.cleaned_data.get("username")
+            messages.success(request, f"Новий аккаунт було успішно створено: {username}")
             login(request, user)
             return redirect("/")
         else:
             err = form.errors.as_data()
+            for msg in form.error_messages:
+                messages.error(request, f"{msg}:{form.error_messages[msg]}")
     form = UserCreationForm
     return render(request, 'register.html', {"form":form, "error":err})
 
-def user_login(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+# def user_login(request):
+#     if request.method == "POST":
+#         username = request.POST["username"]
+#         password = request.POST["password"]
 
-        user = authenticate(request, username, password)
-        if user is not None:
-            login(request, user)
-            return redirect("/")
-    return render(request, "login.html")
+#         user = authenticate(request, username, password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect("/")
+#     return render(request, "login.html")
