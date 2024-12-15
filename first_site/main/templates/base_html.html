@@ -17,15 +17,35 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="/">Home page</a></li>
                 <li><a href="/about">About</a></li>
-                <li><a href="/register">Register</a></li>
                 <li><a href="/post">Show post</a></li>
+
+                {% if islogin is False%}
+                <li><a href="/register">Register</a></li>
+                {% endif %}
+                
+                {% if islogin is False%}
+                <li><a href="/login">Login</a></li>
+                {% endif %}
+
+                {% if islogin is True%}
+                <li><a href="/logout">Logout</a></li>
+                {% endif%}
             </ul>
         </div>
     </nav>
     {% if messages %}
         {% for msg in messages %}
-            <script>M.toast({html:"{{msg}}", classes:"rounded", displayLength: 3000})</script>
-        {% endfor %}
+
+        {% if msg.tags == 'success' %}
+            <script>M.toast({html:"{{msg}}", classes:"green", displayLength: 3000})</script>
+        {% elif msg.tags == 'info' %}
+            <script>M.toast({html:"{{msg}}", classes:"blue", displayLength: 3000})</script>
+        {% elif msg.tags == 'error' %}
+            <script>M.toast({html:"{{msg}}", classes:"red", displayLength: 3000})</script>
+        {% elif msg.tags == 'warning' %}
+            <script>M.toast({html:"{{msg}}", classes:"orange", displayLength: 3000})</script>
+        {% endif %}
+            {% endfor %}
     {% endif %}
     {% block content %}
     {% endblock %}

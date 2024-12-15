@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .models import Post
 
@@ -36,13 +36,26 @@ def register(request):
     form = UserCreationForm
     return render(request, 'register.html', {"form":form, "error":err})
 
-# def user_login(request):
-#     if request.method == "POST":
-#         username = request.POST["username"]
-#         password = request.POST["password"]
+def user_login(request):
+    islogin = request.user.is_authenticated
+    if request.method == "POST":
+        a_form = AuthenticationForm(request, data=request.POST)
+        if a_form.is_valid():
+            username = a_form.cleaned_data.get("username")
+            password = a_form.cleaned_data.get("password")
+            user = authenticate(username = username, password = password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"Ви залогінились під іменем {username}")
+                return redirect("/")
+            else:
+                messages.error(request, "Користувач з таким логіном та паролем не знайдено")
+        else:
+            messages.error(request, "Пароль або логін неправильні")
+    a_form = AuthenticationForm
+    return render(request, "login.html", {"form":a_form, "islogin":islogin})
 
-#         user = authenticate(request, username, password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect("/")
-#     return render(request, "login.html")
+def user_logout(request):
+    logout(request)
+    messages.info(request, "Ви вийшли з аккаунта")
+    return redirect("/")
